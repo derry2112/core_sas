@@ -1,0 +1,33 @@
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SARPRAS_API_KEY = os.getenv("SARPRAS_API_KEY")
+SARPRAS_BASE_URL = os.getenv("SARPRAS_BASE_URL")
+RUANGAN_BASE_URL = os.getenv("RUANGAN_BASE_URL")
+
+PERSONALIA_API_KEY = os.getenv("PERSONALIA_API_KEY")
+PERSONALIA_BASE_URL = os.getenv("PERSONALIA_URL")
+
+TIKETING_BASE_URL = os.getenv("TIKETING_BASE_URL")
+
+API_BASE_URL = os.getenv("API_BASE_URL")
+ABSENSI_API_KEY = os.getenv("ABSENSI_API_KEY")
+DASATA_API_KEY = os.getenv("DASATA_API_KEY")
+NOTIF_API_KEY = os.getenv("NOTIF_API_KEY")
+FILES_API_KEY = os.getenv("FILES_API_KEY")
+EMPLOYEE_API_KEY = os.getenv("EMPLOYEE_API_KEY")
+TIKETING_API_KEY = os.getenv("TIKETING_API_KEY")
+
+PSB_BASE_URL = os.getenv("PSB_BASE_URL")
+
+CALENDAR_API_KEY = os.getenv("CALENDAR_API_KEY")
+CALENDAR_BASE_URL = os.getenv("CALENDAR_BASE_URL")
+
+# DIRECT URL
+PROSATA = os.getenv("PROSATA")
+DIGILEARN = os.getenv("DIGILEARN")
+DPP = os.getenv("BIKER")
+ISO = os.getenv("ISO")

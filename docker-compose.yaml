@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  core:
+    build: .
+    container_name: core_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./logs:/var/log/core_sas
+    env_file:
+      - .env
+    networks:
+      - mynetwork
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  grafana-storage:
+  redis_data:
+
+networks:
+  mynetwork:
+    external: true

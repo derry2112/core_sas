@@ -1,0 +1,25 @@
+import os
+import aioredis
+#from aioredis.exceptions import ConnectionError
+from aioredis.errors import ConnectionError
+from dotenv import load_dotenv
+
+load_dotenv()
+
+REDIS_HOST = os.getenv("REDIS_HOST", "redis")
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")
+REDIS_DB = os.getenv("REDIS_DB", "0")
+
+redis_url = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+
+redis_client = aioredis.from_url(redis_url, decode_responses=True)
+
+async def check_redis():
+    try:
+        await redis_client.ping()
+        print("Redis is connected.")
+    except ConnectionError:
+        print("Redis connection failed.")
+
+async def close_redis():
+    await redis_client.close()

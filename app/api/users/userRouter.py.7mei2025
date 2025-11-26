@@ -1,0 +1,42 @@
+from fastapi import APIRouter, HTTPException, Request, Response, Depends
+from app.services.jwtMiddleware import ClerkAuth
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Dict
+from app.api.users.userAuth import (
+    login_with_firebase,
+    refresh_token,
+    logout_and_revoke_token,
+    get_user_me,
+)
+
+router = APIRouter()
+security = HTTPBearer()
+auth = ClerkAuth()
+
+def require_auth(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict:
+    return auth.verify_session_token(credentials)
+
+@router.post("/token")
+async def token_endpoint(request: Request, response: Response):
+    return await login_with_firebase(request, response)
+
+@router.post("/refresh")
+async def refresh_endpoint(request: Request, response: Response):
+    return await refresh_token(request, response)
+
+@router.get("/me")
+async def protected_route(user_data: Dict = Depends(require_auth)):
+    return {"message": "You are authenticated", "user_data": user_data}
+
+#API GATEWAY
+@router.get("/tiketing/me")
+async def proxy_to_tiketing(user_data=Depends(require_auth)):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            "http://ec2-43-218-94-132.ap-southeast-3.compute.amazonaws.com:8000/ticket/me",
+            headers={
+                "X-User-ID": user_data["sub"],
+                "X-User-Email": user_data.get("email", ""),
+            },
+        )
+    return response.json()

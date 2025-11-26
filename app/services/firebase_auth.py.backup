@@ -1,0 +1,31 @@
+import os
+from dotenv import load_dotenv
+from firebase_admin import credentials, initialize_app, auth
+from fastapi import HTTPException
+
+load_dotenv()
+
+FIREBASE_AUTH = os.getenv('FIREBASE_AUTH')
+
+if not FIREBASE_AUTH:
+    raise ValueError("FIREBASE_AUTH is not set in the .env file")
+
+cred = credentials.Certificate(FIREBASE_AUTH)
+initialize_app(cred)
+
+async def verify_firebase_token(token: str):
+    try:
+        decoded_token = auth.verify_id_token(token)
+        email = decoded_token.get("email")
+        if email is None:
+            raise HTTPException(status_code=400, detail="Email not found in token")
+        return email
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid Firebase token")
+
+async def revoke_user_token(uid: str):
+    try:
+        auth.revoke_refresh_tokens(uid)
+        return {"detail": "User token revoked"}
+    except Exception as e:
+        raise Exception(f"Error revoking token: {str(e)}")
